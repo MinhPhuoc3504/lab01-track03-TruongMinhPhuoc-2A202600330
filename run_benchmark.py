@@ -24,8 +24,8 @@ app = typer.Typer(add_completion=False)
 
 @app.command()
 def main(
-    dataset: str = "data/hotpot_real_50.json",
-    out_dir: str = "outputs/real_run",
+    dataset: str = "data/hotpot_100.json",
+    out_dir: str = "outputs/hotpot100_run",
     reflexion_attempts: int = 3,
     api_key: str = "",
 ) -> None:

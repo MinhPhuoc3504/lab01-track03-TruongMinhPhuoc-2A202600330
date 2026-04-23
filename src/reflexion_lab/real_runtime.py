@@ -65,9 +65,9 @@ def _get_client() -> OpenAI:
 # ---------------------------------------------------------------------------
 # Cấu hình model — 3 model khác nhau, mỗi vai trò một model phù hợp
 # ---------------------------------------------------------------------------
-ACTOR_MODEL     = "gpt-4o-mini"    # Trả lời: cần reasoning, nhưng không cần siêu mạnh
-EVALUATOR_MODEL = "gpt-3.5-turbo"  # Chấm điểm: đơn giản nhất, rẻ nhất
-REFLECTOR_MODEL = "gpt-4o"         # Phân tích lỗi: phức tạp nhất, cần mô hình mạnh nhất
+ACTOR_MODEL     = "gpt-3.5-turbo"  # Yếu nhất, rẻ nhất — hay sai → Reflexion có cơ hội cải thiện rõ
+EVALUATOR_MODEL = "gpt-4o-mini"    # Mạnh hơn Actor — chấm điểm chính xác hơn, tránh false negative
+REFLECTOR_MODEL = "gpt-4o-mini"    # Mạnh hơn Actor — phân tích lỗi và đề xuất chiến thuật chất lượng
 
 # ---------------------------------------------------------------------------
 # Pricing (USD per 1 token)
@@ -77,7 +77,6 @@ _PRICING = {
     "gpt-3.5-turbo": {"input": 0.500 / 1_000_000, "output": 1.500 / 1_000_000},
     "gpt-4o":        {"input": 2.500 / 1_000_000, "output": 10.000 / 1_000_000},
 }
-
 
 def compute_cost(model: str, prompt_tokens: int, completion_tokens: int) -> float:
     """
