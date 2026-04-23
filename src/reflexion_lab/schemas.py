@@ -14,12 +14,16 @@ class QAExample(BaseModel):
     context: list[ContextChunk]
 
 class JudgeResult(BaseModel):
-    # TODO: Học viên định nghĩa các trường cần thiết cho kết quả đánh giá (score, reason, ...)
-    pass
+    score: int = Field(..., ge=0, le=1, description="1 nếu đúng, 0 nếu sai")
+    reason: str = Field(..., description="Lý do chấm điểm chi tiết")
+    missing_evidence: list[str] = Field(default_factory=list, description="Bằng chứng còn thiếu")
+    spurious_claims: list[str] = Field(default_factory=list, description="Thông tin sai trong câu trả lời")
 
 class ReflectionEntry(BaseModel):
-    # TODO: Học viên định nghĩa các trường cần thiết cho một mục reflection (attempt_id, lesson, strategy, ...)
-    pass
+    attempt_id: int = Field(..., description="Số lần thử tương ứng")
+    failure_reason: str = Field(..., description="Nguyên nhân thất bại cụ thể")
+    lesson: str = Field(..., description="Bài học rút ra từ lỗi này")
+    next_strategy: str = Field(..., description="Chiến thuật cụ thể cho lần thử tiếp theo")
 
 class AttemptTrace(BaseModel):
     attempt_id: int
@@ -28,6 +32,8 @@ class AttemptTrace(BaseModel):
     reason: str
     reflection: Optional[ReflectionEntry] = None
     token_estimate: int = 0
+    prompt_tokens: int = 0      # Tokens gửi đi (input)
+    completion_tokens: int = 0  # Tokens nhận về (output)
     latency_ms: int = 0
 
 class RunRecord(BaseModel):
@@ -39,6 +45,9 @@ class RunRecord(BaseModel):
     is_correct: bool
     attempts: int
     token_estimate: int
+    prompt_tokens: int = 0       # Tổng input tokens toàn bộ run
+    completion_tokens: int = 0   # Tổng output tokens toàn bộ run
+    token_cost_usd: float = 0.0  # Chi phí ước tính bằng USD
     latency_ms: int
     failure_mode: Literal["none", "entity_drift", "incomplete_multi_hop", "wrong_final_answer", "looping", "reflection_overfit"]
     reflections: list[ReflectionEntry] = Field(default_factory=list)
